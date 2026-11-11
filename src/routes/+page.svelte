@@ -3,6 +3,9 @@
   import { onMount } from 'svelte';
   import Scatter from '#lib/Scatter.svelte';
   import Line from '#lib/Line.svelte';
+  import { DatePicker } from '@svelte-plugins/datepicker';
+  import { format } from 'date-fns';
+
   import type { PrintHistory, WeeklyPrintCount } from '../types.d';
 
   let prints: PrintHistory[] = $state([]);
@@ -14,6 +17,38 @@
     const [start, end] = dateRange;
     return prints.filter((print) => print.startTime >= start && print.startTime <= end);
   });
+
+  // ------------- Temporary date picker code! -------------
+  let pickerStart = $state<Date | number | undefined>();
+  let pickerEnd = $state<Date | number | undefined>();
+  let isPickerOpen = $state(false);
+
+  function toDate(value: Date | number | string | null | undefined): Date | undefined {
+    if (value == null) return undefined;
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) || d.getTime() <= 0 ? undefined : d;
+  }
+
+  $effect(() => {
+    if (!dateRange) return;
+    pickerStart = dateRange[0];
+    pickerEnd = dateRange[1];
+  });
+
+  $effect(() => {
+    const start = toDate(pickerStart);
+    const end = toDate(pickerEnd);
+    if (!start || !end) return;
+    if (dateRange && +dateRange[0] === +start && +dateRange[1] === +end) return;
+    dateRange = start <= end ? [start, end] : [end, start];
+  });
+
+  const dataExtent = $derived(d3.extent(prints, (p) => p.startTime) as [Date, Date]);
+
+  function clearRange() {
+    dateRange = dataExtent;
+  }
+  // -------------------------------------------------------
 
   async function loadCsv() {
     prints = await d3.csv('./prints.csv', (row) => ({
@@ -43,6 +78,30 @@
     and Bambu printers. The scatter plot compares estimated and actual duration in hours, and the
     line graph shows jobs started each week.
   </p>
+
+  <!-- ------------- Temporary date picker code! ------------- -->
+  <div class="picker">
+    <DatePicker
+      bind:isOpen={isPickerOpen}
+      bind:startDate={pickerStart}
+      bind:endDate={pickerEnd}
+      isRange
+      alignRight
+    >
+      <button type="button" onclick={() => (isPickerOpen = !isPickerOpen)}>
+        {#if dateRange}
+          {format(dateRange[0], 'MMM d, yyyy')} – {format(dateRange[1], 'MMM d, yyyy')}
+        {:else}
+          Select date range
+        {/if}
+      </button>
+    </DatePicker>
+
+    {#if dateRange}
+      <button type="button" onclick={clearRange}>Clear</button>
+    {/if}
+  </div>
+  <!-- ------------------------------------------------------- -->
 
   {#if prints.length > 0 && weeklyCounts.length > 0}
     <!-- <h2>Scatter plot</h2> -->
