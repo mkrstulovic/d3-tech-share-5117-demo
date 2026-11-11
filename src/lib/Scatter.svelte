@@ -4,6 +4,7 @@
 
   type TProps = {
     prints: PrintHistory[];
+    visiblePrints: PrintHistory[];
   };
 
   // export type PrintHistory = {
@@ -15,7 +16,7 @@
   //   costs: number;
   // };
 
-  const { prints }: TProps = $props();
+  const { prints, visiblePrints }: TProps = $props();
   let svgElement: SVGSVGElement | undefined = $state();
 
   const width = 600;
