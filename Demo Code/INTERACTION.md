@@ -8,16 +8,14 @@
 
 > This works well enough, but it's clunky. The DatePicker is clunky, has to constantly manage several state variables and overall is not as easy to use. Wouldn't it be nice if we could just select a range of dates with a single brush?
 
-
 > Well, guess what? D3 lets you do just that. Let's give the Line chart some power to filter our scatter plot by just selecting a range of dates. We'll bind the dateRange state to the Line so we can change it.
 
 ## 1. Start with the page.svelte file.
 
 **_Paste into the `+page.svelte` file._**
 
-
 ```html
-<Line data={weeklyCounts} bind:dateRange />
+<Line data="{weeklyCounts}" bind:dateRange />
 ```
 
 ## 2. Add Brush to Line.svelte
@@ -25,6 +23,7 @@
 > Now we need to account for the fact that dateRange is a prop, so we have to add that into our Line props. First, we want to define a datatype for our brush. A brush is effectively a range of values with two endpoints. We want to establish a range of dates, so we can use a tuple with two Date types as the endpoints. This is our dateRange.
 
 **_Paste into the `Line.svelte` file._**
+
 ```ts
 type TProps = {
   data: WeeklyPrintCount[];
@@ -37,11 +36,12 @@ let { data, dateRange = $bindable() }: TProps = $props();
 > Then, we need to define the brush effect. We add this, as many times before, into the SVG as its own group.
 
 **_Paste into the `Line.svelte` file._**
+
 ```html
 <g class="brush" />
 ```
 
-> Similar to how we did lines, we will define a brush effect on the x-axis (which is our dates). 
+> Similar to how we did lines, we will define a brush effect on the x-axis (which is our dates).
 
 ```ts
 const brush = d3
@@ -52,20 +52,15 @@ const brush = d3
   ])
   .on('brush end', (event) => {
     const selection = event.selection as [number, number] | null;
-    dateRange = selection
-      ? [xScale.invert(selection[0]), xScale.invert(selection[1])]
-      : undefined;
+    dateRange = selection ? [xScale.invert(selection[0]), xScale.invert(selection[1])] : undefined;
   });
 ```
 
 > Then, we need to define the extent of the brush, or where it can highlight. We want this to cover the entirety of the visualization, covering the same dimensions as specified by the axes (see our range definitions).
 
-
 > This is effectively 2 points that create a rectangular overlay for the visualization area (not the ticks or axes marks). We then need to define what will happen when the brush ends (when we make our selection).
 
-
 > We get the selection made from the event, which is returned as a series of physical coordinates from the range. We need to invert these to swap them from the physical coordinates to the data values, another function offered by d3. If we have no selection, we keep the dateRange undefined. Otherwise, we load what the event returned.
-
 
 > Finally, we set the brush to target the brush group and call it on the SVG.
 
@@ -122,7 +117,6 @@ let tooltip: { print: PrintHistory; x: number; y: number } | undefined = $state(
 
 ```ts
 .on('pointerenter', (event, print) => {
-  if (!visInteractivity) return;
   const [x, y] = d3.pointer(event, svgElement);
   tooltip = { print, x: x + 10, y: y + 10 };
   })
@@ -140,6 +134,6 @@ let tooltip: { print: PrintHistory; x: number; y: number } | undefined = $state(
 
 > And voila! Now, when we hover a point, we can see the actual data stored inside!
 
-> D3 allows so much interaction and minute detail and it really doesn't stop here. It goes so much further in terms of what you can do. Interaction, customization, complexity. All of that and more. That said... 
+> D3 allows so much interaction and minute detail and it really doesn't stop here. It goes so much further in terms of what you can do. Interaction, customization, complexity. All of that and more. That said...
 
 > TRANSITION TO FINAL PROJECTS
