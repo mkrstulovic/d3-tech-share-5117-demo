@@ -9,6 +9,12 @@
   let weeklyCounts: WeeklyPrintCount[] = $state([]);
   let dateRange: [Date, Date] | undefined = $state();
 
+  const visiblePrints = $derived.by(() => {
+    if (!dateRange) return prints;
+    const [start, end] = dateRange;
+    return prints.filter((print) => print.startTime >= start && print.startTime <= end);
+  });
+
   async function loadCsv() {
     prints = await d3.csv('./prints.csv', (row) => ({
       startTime: new Date(row.startTime),
@@ -41,7 +47,7 @@
   {#if prints.length > 0 && weeklyCounts.length > 0}
     <!-- <h2>Scatter plot</h2> -->
     <!-- <p>Showing {visiblePrints.length} of {prints.length} print jobs.</p> -->
-    <!-- <Scatter {prints} /> -->
+    <!-- <Scatter {prints} {visiblePrints} /> -->
 
     <h2>Line graph</h2>
     <!-- <p>Drag across the line graph to filter the scatter plot.</p> -->
