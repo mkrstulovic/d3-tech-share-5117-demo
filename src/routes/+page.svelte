@@ -105,12 +105,10 @@
 
   {#if prints.length > 0 && weeklyCounts.length > 0}
     <!-- <h2>Scatter plot</h2> -->
-    <!-- <p>Showing {visiblePrints.length} of {prints.length} print jobs.</p> -->
     <!-- <Scatter {prints} {visiblePrints} /> -->
 
     <h2>Line graph</h2>
-    <!-- <p>Drag across the line graph to filter the scatter plot.</p> -->
-    <!-- <Line data={weeklyCounts} /> -->
+    <Line data={weeklyCounts} />
   {/if}
 </div>
 
