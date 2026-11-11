@@ -6,47 +6,11 @@
 
 ## 1. Start with an empty SVG
 
-**_Paste into the blank `Scatter.svelte` file._**
-
-```ts
-<script lang="ts">
-  import * as d3 from 'd3';
-  import type { PrintHistory } from '../types.d';
-
-  type TProps = {
-    prints: PrintHistory[];
-    visiblePrints: PrintHistory[];
-    visInteractivity: boolean;
-  };
-
-  // export type PrintHistory = {
-  //   startTime: Date;
-  //   actualPrintTime: number;
-  //   calculatedPrintTime: number;
-  //   status: 'printed' | 'aborted';
-  //   printer: string;
-  //   costs: number;
-  // };
-
-  const { prints, visiblePrints }: TProps = $props();
-  let svgElement: SVGSVGElement | undefined = $state();
-
-  const width = 600;
-  const height = 350;
-  const margin = { top: 45, right: 20, bottom: 50, left: 60 };
-</script>
-```
-
 > We’ll start with a little setup. The page already loaded the CSV and passes the print records into this component. Each record has the `PrintHistory` shape we saw earlier. The three fields we’ll use are `calculatedPrintTime` for the estimate, `actualPrintTime` for what happened, and `status` for how the job ended.
 
-**_Paste below `</script>`._**
-
-```ts
-<svg bind:this={svgElement} {width} {height}>
-</svg>
-```
-
 > This part should look familiar from the line chart. We start with an empty SVG to draw in and `bind:this` gives us a reference to it so D3 knows which SVG to work with.
+
+_**Uncomment Scatter component in `+page.svelte`**_
 
 **_Save and show the browser._**
 
@@ -65,8 +29,6 @@
   <text transform="rotate(-90)" x={-height / 2} y={16} text-anchor="middle">Actual duration (hours)</text>
 ```
 
-> First, let’s give each axis a place to go. These two `<g>` elements are SVG groups. We position one at the bottom and one on the left. The `<text>` elements tell us what each axis measures. Now let’s give D3 the scales it needs to draw the axes.
-
 **_Paste above `</script>`._**
 
 ```ts
@@ -84,8 +46,8 @@ $effect(() => {
     .domain([0, d3.max(prints, (print) => print.actualPrintTime) || 1])
     .range([height - margin.bottom, margin.top]);
 
-  svg.select<SVGGElement>(".x-axis").call(d3.axisBottom(xScale).ticks(6));
-  svg.select<SVGGElement>(".y-axis").call(d3.axisLeft(yScale).ticks(6));
+  svg.select<SVGGElement>('.x-axis').call(d3.axisBottom(xScale).ticks(6));
+  svg.select<SVGGElement>('.y-axis').call(d3.axisLeft(yScale).ticks(6));
 });
 ```
 
@@ -115,15 +77,15 @@ $effect(() => {
 
 ```ts
 svg
-  .select(".points")
-  .selectAll("circle")
+  .select('.points')
+  .selectAll('circle')
   .data(visiblePrints)
-  .join("circle")
-  .attr("cx", (print) => xScale(print.calculatedPrintTime))
-  .attr("cy", (print) => yScale(print.actualPrintTime))
-  .attr("r", 4)
-  .attr("fill", "steelblue")
-  .attr("opacity", 0.5);
+  .join('circle')
+  .attr('cx', (print) => xScale(print.calculatedPrintTime))
+  .attr('cy', (print) => yScale(print.actualPrintTime))
+  .attr('r', 4)
+  .attr('fill', 'steelblue')
+  .attr('opacity', 0.5);
 ```
 
 > Here’s where it starts to feel like a different chart. For the line, we gave the whole list of weekly counts to one path with `.datum()`. Here we want one circle per job. `selectAll("circle")` looks for circles inside `.points`. The first time through, there aren’t any. `.data(visiblePrints)` tells D3 what to bind, and `.join("circle")` makes the missing circles. Now each circle has one job attached to it.
@@ -143,7 +105,7 @@ svg
 **_Paste above `$effect`._**
 
 ```ts
-const colors = { printed: "steelblue", aborted: "darkorange" };
+const colors = { printed: 'steelblue', aborted: 'darkorange' };
 ```
 
 > We already used a function to get each job’s x and y positions. We can do the same for `fill`. This function reads the job’s status and looks up the color we just picked.
@@ -176,8 +138,8 @@ const colors = { printed: "steelblue", aborted: "darkorange" };
 
 ```ts
 const legendItems = [
-  { label: "Completed", color: colors.printed },
-  { label: "Aborted", color: colors.aborted },
+  { label: 'Completed', color: colors.printed },
+  { label: 'Aborted', color: colors.aborted }
 ];
 ```
 
@@ -186,23 +148,23 @@ const legendItems = [
 **_Paste inside `$effect`, after the points chain and before the closing `});`._**
 
 ```ts
-const legend = svg.select(".legend");
+const legend = svg.select('.legend');
 legend
-  .selectAll("circle")
+  .selectAll('circle')
   .data(legendItems)
-  .join("circle")
-  .attr("cx", (_item, index) => index * 120)
-  .attr("r", 4)
-  .attr("fill", (item) => item.color)
-  .attr("opacity", 0.5);
+  .join('circle')
+  .attr('cx', (_item, index) => index * 120)
+  .attr('r', 4)
+  .attr('fill', (item) => item.color)
+  .attr('opacity', 0.5);
 
 legend
-  .selectAll("text")
+  .selectAll('text')
   .data(legendItems)
-  .join("text")
-  .attr("x", (_item, index) => index * 120 + 10)
-  .attr("y", 4)
-  .attr("font-size", 12)
+  .join('text')
+  .attr('x', (_item, index) => index * 120 + 10)
+  .attr('y', 4)
+  .attr('font-size', 12)
   .text((item) => item.label);
 ```
 
