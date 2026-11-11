@@ -18,7 +18,7 @@
     return prints.filter((print) => print.startTime >= start && print.startTime <= end);
   });
 
-  // ------------- Temporary date picker code! -------------
+  // ----------------- Temporary date picker code! -----------------
   let pickerStart = $state<Date | number | undefined>();
   let pickerEnd = $state<Date | number | undefined>();
   let isPickerOpen = $state(false);
@@ -48,7 +48,7 @@
   function clearRange() {
     dateRange = dataExtent;
   }
-  // -------------------------------------------------------
+  // ---------------------------------------------------------------
 
   async function loadCsv() {
     prints = await d3.csv('./prints.csv', (row) => ({
@@ -79,7 +79,7 @@
     line graph shows jobs started each week.
   </p>
 
-  <!-- ------------- Temporary date picker code! ------------- -->
+  <!-- ----------------- Temporary date picker code! ----------------- -->
   <div class="picker">
     <DatePicker
       bind:isOpen={isPickerOpen}
@@ -101,7 +101,7 @@
       <button type="button" onclick={clearRange}>Clear</button>
     {/if}
   </div>
-  <!-- ------------------------------------------------------- -->
+  <!-- --------------------------------------------------------------- -->
 
   {#if prints.length > 0 && weeklyCounts.length > 0}
     <!-- <h2>Scatter plot</h2> -->
