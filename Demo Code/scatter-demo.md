@@ -51,7 +51,7 @@ $effect(() => {
 });
 ```
 
-> The main change is what goes on the axes. The line chart used `scaleTime()` for dates across the bottom. Here we have estimated hours across the bottom and actual hours up the side, so we use `scaleLinear()` for both.
+> The slight change is what goes on the axes. The line chart used `scaleTime()` for dates across the bottom. Here we have estimated hours across the bottom and actual hours up the side, so we use `scaleLinear()` for both.
 >
 > Here’s the x scale. Its `domain` is the input, from zero up to the largest estimate that `d3.max()` finds. Its `range` is the output, from the left edge of the plot to the right. In SVG, y gets bigger as you go down, so we give the y scale a range from bottom to top. That way, a longer actual duration puts a dot higher up.
 >
