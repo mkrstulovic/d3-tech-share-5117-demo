@@ -108,7 +108,7 @@
     <Scatter {prints} {visiblePrints} /> -->
 
     <h2>Line graph</h2>
-    <Line data={weeklyCounts} />
+    <Line data={weeklyCounts} bind:dateRange />
   {/if}
 </div>
 

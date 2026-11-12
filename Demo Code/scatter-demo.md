@@ -84,7 +84,7 @@ svg
   .attr('cx', (print) => xScale(print.calculatedPrintTime))
   .attr('cy', (print) => yScale(print.actualPrintTime))
   .attr('r', 4)
-  .attr('fill', 'steelblue')
+  .attr('fill', (print) => colors[print.status])
   .attr('opacity', 0.5);
 ```
 

@@ -4,9 +4,11 @@
 
   type TProps = {
     data: WeeklyPrintCount[];
+    dateRange: [Date, Date] | undefined;
   };
 
-  let { data }: TProps = $props();
+  let { data, dateRange = $bindable() }: TProps = $props();
+
   let svgElement: SVGSVGElement | undefined = $state();
 
   const width = 600;
@@ -17,9 +19,8 @@
   $effect(() => {
     if (!svgElement) return;
 
-    // Selecting the svg element 
+    // Selecting the svg element
     const svg = d3.select(svgElement);
-
   });
 </script>
 
