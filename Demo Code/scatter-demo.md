@@ -6,7 +6,7 @@
 
 ## 1. Start with an empty SVG
 
-> We’ll start with a little setup. The page already loaded the CSV and passes the print records into this component. Each record has the `PrintHistory` shape we saw earlier. The three fields we’ll use are `calculatedPrintTime` for the estimate, `actualPrintTime` for what happened, and `status` for how the job ended.
+> We’ll start with a little setup. (in page) `visiblePrints` is the list we get after applying a date range. `$derived.by` is a Svelte rune that uses this function to keep that list up to date as the data or date range changes. The page already loaded the CSV and passes the print records into this component. Each record has the `PrintHistory` shape we saw earlier. The three fields we’ll use are `calculatedPrintTime` for the estimate, `actualPrintTime` for what happened, and `status` for how the job ended.
 
 > We’re starting with the same empty SVG setup you just saw in the line chart. Let’s turn on the scatter component so we can watch it come together.
 
