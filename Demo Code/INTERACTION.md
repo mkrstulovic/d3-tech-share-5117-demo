@@ -10,30 +10,13 @@
 
 > Well, guess what? D3 lets you do just that. Let's give the Line chart some power to filter our scatter plot by just selecting a range of dates. We'll bind the dateRange state to the Line so we can change it.
 
-## 1. Start with the page.svelte file.
 
-**_Paste into the `+page.svelte` file._**
 
-```html
-<Line data="{weeklyCounts}" bind:dateRange />
-```
+## 1. Add Brush to Line.svelte
 
-## 2. Add Brush to Line.svelte
+> We have dateRange bound to the Line component already.
 
-> Now we need to account for the fact that dateRange is a prop, so we have to add that into our Line props. First, we want to define a datatype for our brush. A brush is effectively a range of values with two endpoints. We want to establish a range of dates, so we can use a tuple with two Date types as the endpoints. This is our dateRange.
-
-**_Paste into the `Line.svelte` file._**
-
-```ts
-type TProps = {
-  data: WeeklyPrintCount[];
-  dateRange: [Date, Date] | undefined;
-};
-
-let { data, dateRange = $bindable() }: TProps = $props();
-```
-
-> Then, we need to define the brush effect. We add this, as many times before, into the SVG as its own group.
+> Then, we need to add the brush effect, as many times before, into the SVG as its own group.
 
 **_Paste into the `Line.svelte` file._**
 
