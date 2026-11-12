@@ -104,8 +104,8 @@
   <!-- --------------------------------------------------------------- -->
 
   {#if prints.length > 0 && weeklyCounts.length > 0}
-    <!-- <h2>Scatter plot</h2> -->
-    <!-- <Scatter {prints} {visiblePrints} /> -->
+    <!-- <h2>Scatter plot</h2>
+    <Scatter {prints} {visiblePrints} /> -->
 
     <h2>Line graph</h2>
     <Line data={weeklyCounts} />
