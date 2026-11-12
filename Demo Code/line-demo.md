@@ -1,4 +1,4 @@
-# Scatter plot demo
+# Line demo
 
 ## Opening
 
@@ -8,9 +8,9 @@
 
 ## 1. SVGs
 
-> Now we have a basic setup here: we have our data as a $prop, height, width, marigins for the graph, and an effect function that currently does nothing.
+> This is our basic setup: we have our data as a $prop, height, width, marigins for the graph, and an effect function that currently does nothing.
 
-> You'll notice that for what we actually display, we have an svg tag. For those who don't know, an svg is a type of image that uses mathematical formulas rather than a rastered set of pixels. D3 is primarily designed with svg in mind, although html canvases are possible, many functions format directly into svg formats. The actual formats of svgs are similar to html in their grouping, so lets take a look 
+> You'll notice that for what we actually display, we have an svg tag. For those who don't know, an svg is a type of image that uses mathematical formulas rather than a rastered set of pixels. D3 is primarily designed with svg in mind, html canvases are possible, but many functions format directly into svg formats. The actual formats of svgs are similar to html in their grouping, so lets take a look 
 
 **_Paste inside `<svg>`._**
 
@@ -24,13 +24,13 @@
   <text transform="rotate(-90)" x={-height / 2} y={16} text-anchor="middle">Print jobs</text>
 ```
 
-> We have an empty path element which is where our line will go, empty g elements for the axis to occupy (g elements are groupings think div for html), and text elements that describe the axes. The g elements will tell d3 where to fill in our information. We can simply add more elements to the svg tag.
+> We have an empty path element which is where our line will go, empty g elements for the axis. g elements are groups are used to group items in the svg, and are analogus to div elements in html. We also have text elements for labeling the axes. The g and path elements will be filled in later with d3. If we need to add more to the svg, we can just add an extra element within the scg.
 
-> If you decide to use d3, svg images are trivially easy to save and export.
+> Worth noting if you decide to use d3, this structure  makes graphs incredibly easy to save and export.
 
 ## 2. Filling in the chart 
 
-> Now moving back into the effect, this is where we construct our graph. We just need the two axes and the line as defined in the svg. 
+> Now moving back into the effect, this is where we construct our graph. We just need the two axes and the actual line. 
 
 > D3 has their own axis definitions. They need 3 things: scale, domain, and range. We make our x axis:
 
@@ -43,7 +43,7 @@ const xScale = d3
       .range([margin.left, width - margin.right]);
 ```
 
-> Scale, domain, and range. Scale is the specific type of value associated with the axis. We use scaleTime() here since the X axis is made up of dates. There are many other types: ScaleLinear for straightforward number values, ScaleLog for logarithmic scales, and ScaleBand for strings to name a few. Domain specifies the values that the axis covers. There were actually more dates before January this year, so we want to make sure the values are bounded by the dates in our actual data. Range just specifies the axis's extend on the svg, which we just define in terms of our margins
+> Scale, domain, and range. Scale is the specific type of value associated with the axis. We use scaleTime() here since the X axis is made up of dates. There are many other types: ScaleLinear for straightforward number values, ScaleLog for logarithmic scales, and ScaleBand for strings to name a few. Domain specifies the values that the axis covers. For example there were actually more dates before January this year, but we don't want to show them, we just want the dates in our actual data. Range just specifies the axis's extend within the svg, which we just define as the dimension minus the margins
 
 > So if we want to add our y axis we need scale, domain, and ___?
 
@@ -54,7 +54,7 @@ const yScale = d3
       .range([height - margin.bottom, margin.top]);
 ```
 
-> I'm so proud of all of you, notice that we use ScaleLinear, and the domain is from 0 to the maximum prints
+> I'm so proud of all of you, notice that we use ScaleLinear. 0 to the maximum prints
 
 > The scales are made, we just need to add them into the svg with d3
 
@@ -63,11 +63,11 @@ svg.select<SVGGElement>('.x-axis').call(d3.axisBottom(xScale).ticks(12));
     svg.select<SVGGElement>('.y-axis').call(d3.axisLeft(yScale).ticks(4));
 ```
 
-> We select the svg elements, and use d3 to create an axisBottom and axisLeft. The ticks just signify an approximation how many labels will be on the axis
+> We select the svg elements, and use d3 to actually display the axis (axisbottom & left because x axis goes on the bottom and y axis goes to the left). The ticks just signify an approximation how many labels will be on the axis
 
 (Reload page if time allows)
 
-> Axes are down so the last thing we need is our actual data in the form of a line. Let's look at the code for this:
+> We've made our axes, so now all thats left is actual data in the form of a line. Let's look at the code for this:
 
 ```ts
 const line = d3
