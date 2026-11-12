@@ -2,13 +2,13 @@
 
 ## Opening
 
-> Tayler started with a pile of print logs from the makerspace. The line chart helped us see when jobs were coming in. I want to ask one more thing about those same jobs. If a print was estimated to take two hours, how long did it actually take? Let’s give each job a dot so we can see the estimate and the actual time together.
+> Tayler started with a pile of print logs from the makerspace. The line chart helped us see when jobs were coming in. I want to ask one more thing about those same jobs. If a print was estimated to take two hours, how long did it actually take? Let’s create a scatter plot for our data and give each job a dot so we can see the estimate and the actual time together.
 
 ## 1. Start with an empty SVG
 
 > We’ll start with a little setup. The page already loaded the CSV and passes the print records into this component. Each record has the `PrintHistory` shape we saw earlier. The three fields we’ll use are `calculatedPrintTime` for the estimate, `actualPrintTime` for what happened, and `status` for how the job ended.
 
-> This part should look familiar from the line chart. We start with an empty SVG to draw in and `bind:this` gives us a reference to it so D3 knows which SVG to work with.
+> We’re starting with the same empty SVG setup you just saw in the line chart. Let’s turn on the scatter component so we can watch it come together.
 
 _**Uncomment Scatter component in `+page.svelte`**_
 
@@ -18,7 +18,7 @@ _**Uncomment Scatter component in `+page.svelte`**_
 
 ## 2. Give the axes a place, then draw them
 
-> Now as in the line chart, let's set up our axes.
+> Let’s give the axes their groups and labels, just like in the line chart.
 
 **_Paste inside `<svg>`._**
 
@@ -51,11 +51,9 @@ $effect(() => {
 });
 ```
 
-> We start by selecting our SVG, just like we did for the line chart. That chart had dates across the bottom, so we used a time scale there. Now we have estimated hours across the bottom and actual hours up the side. We’ll use `scaleLinear()` for both.
+> The main change is what goes on the axes. The line chart used `scaleTime()` for dates across the bottom. Here we have estimated hours across the bottom and actual hours up the side, so we use `scaleLinear()` for both.
 >
-> Here’s the x scale. Its `domain` is the input, from zero up to the largest estimate that `d3.max()` finds. Its `range` is the output, from the left edge of the plot to the right. In SVG, y gets bigger as you go down, so we give the y scale a range from bottom to top. That way, a longer actual duration puts a dot higher up.
->
-> Now we hand those scales to `axisBottom` and `axisLeft`. Each `.call()` draws an axis in the group we just added. `.ticks(6)` gives D3 a rough idea of how many ticks we want.
+> `d3.max()` gives us the upper end of each scale’s domain. We pass those scales to `axisBottom` and `axisLeft` to draw the axes. In a second, we’ll use those exact same scales to position the dots. That’s how the dots line up with the numbers on the axes.
 
 **_Save and show the browser._**
 
@@ -88,15 +86,15 @@ svg
   .attr('opacity', 0.5);
 ```
 
-> Here’s where it starts to feel like a different chart. For the line, we gave the whole list of weekly counts to one path with `.datum()`. Here we want one circle per job. `selectAll("circle")` looks for circles inside `.points`. The first time through, there aren’t any. `.data(visiblePrints)` tells D3 what to bind, and `.join("circle")` makes the missing circles. Now each circle has one job attached to it.
+> Here’s where it starts to feel like a different chart. For the line itself, we gave the whole list of weekly counts to one path with `.datum()`. Here we want one circle per job, so we use a join like we did for the semester markers. `selectAll('circle')` looks for circles inside `.points`. The first time through, there aren’t any. `.data(visiblePrints)` gives D3 the jobs, and `.join('circle')` creates the missing circles. Now each circle has one job attached to it.
 >
 > Now we can say where each circle goes. `cx` and `cy` are the x and y coordinates of its center. D3 passes the job into each function. We run its estimated hours through `xScale` and its actual hours through `yScale`. Every dot gets the same radius.
 >
 > One thing to keep in mind for Marko’s part. The scales use all the jobs in `prints`. The circles come from `visiblePrints`. When that list changes, the join can add, reuse, or remove circles, and the axes keep the same scale.
 
-**_Save and show the browser. Pick a dot you can easily point to._**
+**_Save and show the browser. Pick a dot you can easily point to and read its two values._**
 
-> Now we’ve got a blue dot for each job we’re showing. For this one, look straight down to read the estimate and straight left to read the actual time.
+> Now we’ve got a blue dot for each job we’re showing. For this one, look straight down to read the estimate and straight left to read the actual time. How close was the estimate for this job?
 
 ## 4. Color points by status
 
@@ -168,9 +166,11 @@ legend
   .text((item) => item.label);
 ```
 
-> This is the same join we used for the scatter plot. We pass in `legendItems` once to make a circle for each entry and again to make a text element for each entry.
+> First we select `.legend` so D3 looks inside that group for its circles and labels. Then we do the same join we used for the points. This time we’re using `legendItems`, so we get one circle for Completed and one for Aborted.
 >
-> See how we start from `.legend` here? That keeps these circles and labels in their own group. The second argument, `index`, tells us whether we’re placing the first or second entry. We use it to space them out, and `.text()` writes the label.
+> Look at `cx`. D3 passes in the legend entry first and its index second. `_item` is that entry, the object with a color and a label. The underscore is a convention for an unused parameter. For position we only need `index`, which starts at zero. `index * 120` spaces the circles apart. For `fill`, we use the item itself to get its color.
+>
+> Then we join the same list to the text elements. We use the same spacing and add `10` to put each label just to the right of its circle. Finally, `.text()` writes the label from the item.
 
 **_Save and show the browser. Point to the legend in the upper right._**
 
