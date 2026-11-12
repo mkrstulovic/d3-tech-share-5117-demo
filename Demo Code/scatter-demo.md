@@ -6,7 +6,7 @@
 
 ## 1. Start with an empty SVG
 
-> We’ll start with a little setup. (in page) `visiblePrints` is the list we get after applying a date range. `$derived.by` is a Svelte rune that uses this function to keep that list up to date as the data or date range changes. For now, we can assume both `prints` and `visiblePrints` are the same. Each record has the `PrintHistory` shape we saw earlier. The three fields we’ll use are `calculatedPrintTime` for the estimate, `actualPrintTime` for what happened, and `status` for how the job ended.
+> We’ll start with a little setup. Our scatter takes in the props `prints` and `visiblePrints`. `prints` is the list of every print in our dataset, while `visiblePrints` is a separate variable we're defined to filter `prints` after applying a date range. `$derived.by` is a Svelte rune that uses this function to keep that list up to date as the data or date range changes. For now, we can assume both `prints` and `visiblePrints` are the same. Each record has the `PrintHistory` shape we saw earlier. The three fields we’ll use are `calculatedPrintTime` for the estimate, `actualPrintTime` for what happened, and `status` for how the job ended.
 
 > We’re starting with the same empty SVG setup you just saw in the line chart. Let’s turn on the scatter component so we can watch it come together.
 
@@ -53,7 +53,9 @@ $effect(() => {
 
 > The main change is what goes on the axes. The line chart used `scaleTime()` for dates across the bottom. Here we have estimated hours across the bottom and actual hours up the side, so we use `scaleLinear()` for both.
 >
-> `d3.max()` gives us the upper end of each scale’s domain. We pass those scales to `axisBottom` and `axisLeft` to draw the axes. In a second, we’ll use those exact same scales to position the dots. That’s how the dots line up with the numbers on the axes.
+> Here’s the x scale. Its `domain` is the input, from zero up to the largest estimate that `d3.max()` finds. Its `range` is the output, from the left edge of the plot to the right. In SVG, y gets bigger as you go down, so we give the y scale a range from bottom to top. That way, a longer actual duration puts a dot higher up.
+>
+> We pass those scales to `axisBottom` and `axisLeft` to draw the axes. In a second, we’ll use those exact same scales to position the dots. That’s how the dots line up with the numbers on the axes.
 
 **_Save and show the browser._**
 
